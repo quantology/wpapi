@@ -1,0 +1,2 @@
+# wpapi
+Python Wordpress API
