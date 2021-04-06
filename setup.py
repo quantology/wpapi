@@ -22,10 +22,6 @@ classifiers = [
 
 packages = [
     'wpapi',
-    'wpapi.utils',
-    'wpapi.core',
-    'wpapi.posts',
-    'wpapi.sync'
 ]
 
 with open("README.md", "r") as fp:

@@ -1,37 +1,8 @@
+from typing import Optional, Iterable
+
 import mistune
 
 from .utils import from_datetime, to_datetime
-
-class WordPressPostsProxy:
-    # todo -- filtering, select by tags, setting, etc.
-    def __init__(self, wp_api):
-        self.wp_api = wp_api
-
-    def __iter__(self):
-        for post_data in self.wp_api.paged("wp/v2/posts"):
-            yield WordPressPost(post_data, wp_api=self.wp_api)
-
-    def get(self, slug):
-        # have to check every status :eyeroll:
-        for status in ["publish", "future", "draft", "pending", "private"]:
-            posts = list(self.wp_api.paged("wp/v2/posts", slug=slug, status=status))
-            if posts:
-                if self.wp_api.debug and len(posts) > 1:
-                    print(posts)
-                assert len(posts) == 1
-                return WordPressPost(posts[0], wp_api=self.wp_api)
-        return None
-
-    def __getitem__(self, slug):
-        if isinstance(slug, str):
-            result = self.get(slug)
-            if result is None:
-                raise KeyError(f"Post with slug {slug} not found on WordPress at {self.wp_api.host}")
-            return result
-
-    def __setitem__(self, slug, post: WordPressPost):
-        slugged_post = post.copy(slug=slug, wp_api=self.wp_api)
-        slugged_post.save()
 
 class WordPressPost:
     # https://developer.wordpress.org/rest-api/reference/posts/
@@ -98,3 +69,37 @@ class WordPressPost:
             post_to_url += str(existing_id)
         result = self.wp_api.post(post_to_url, json=self.data)
         assert result["slug"] == self.data["slug"]
+
+class WordPressPostsProxy:
+    # todo -- filtering, select by tags, setting, etc.
+    def __init__(self, wp_api):
+        self.wp_api = wp_api
+
+    def __iter__(self) -> Iterable[WordPressPost]:
+        for post_data in self.wp_api.paged("wp/v2/posts"):
+            yield WordPressPost(post_data, wp_api=self.wp_api)
+
+    def get(self, slug) -> Optional[WordPressPost]:
+        # have to check every status :eyeroll:
+        for status in ["publish", "future", "draft", "pending", "private"]:
+            posts = list(self.wp_api.paged("wp/v2/posts", slug=slug, status=status))
+            if posts:
+                if self.wp_api.debug and len(posts) > 1:
+                    print(posts)
+                assert len(posts) == 1
+                return WordPressPost(posts[0], wp_api=self.wp_api)
+        return None
+
+    def __getitem__(self, slug) -> WordPressPost:
+        # todo -- allow key to be post_id, or date range
+        if isinstance(slug, str):
+            result = self.get(slug)
+            if result is None:
+                raise KeyError(f"Post with slug {slug} not found on WordPress at {self.wp_api.host}")
+            return result
+
+    def __setitem__(self, slug, post: WordPressPost):
+        slugged_post = post.copy(slug=slug, wp_api=self.wp_api)
+        slugged_post.save()
+
+

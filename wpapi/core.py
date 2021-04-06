@@ -57,7 +57,7 @@ class WordPressAPI:
     
     @cached_property
     def info(self):
-        return self.get()
+        return self.get("")
 
     @property
     def posts(self):
