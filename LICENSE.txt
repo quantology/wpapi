@@ -1,0 +1,30 @@
+"Community Clause" License Condition v0.1
+
+The Software is provided to you by the Licensor under the License, as defined
+below, subject to the following condition.
+
+In using, modifying, or distributing the Software, you agree that all employees
+of your organization are allowed to work for some amount of time each year on
+any "Free Software Community Projects" of their choosing, and will be
+compensated by your organization for such work at their standard rate, and that
+such time will not in any way be counted as or exchangeable with "vacation" or
+"holiday" time. Employees must be allowed at least a week of such compensated
+work per year, pro-rated proportionally if they are employed part-time or only
+employed for part of the year.
+
+For the purposes of this clause, "Free Software Community Projects" includes
+any software project licensed according to:
+  - any license classified as a "free" license by the Free Software Foundation
+    (list at https://www.gnu.org/licenses/license-list.html)
+  - any license "approved" by the Open Source Initiative (list available at
+    https://opensource.org/licenses/)
+  - the Server Side Public License (SSPL) (available at
+    https://www.mongodb.com/licensing/server-side-public-license)
+  - any of the above combined with a Commons Clause (available at
+    https://commonsclause.com/)
+  - any of the above combined with a Community Clause (available at
+    <TODO: make site>)
+
+Software: "WPAPI" Python WordPress API
+License: BSD 3-Clause
+Licensor: Michael Tartre
