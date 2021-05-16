@@ -28,7 +28,7 @@ with open("README.md", "r") as fp:
     long_description = fp.read()
 
 setup(name="wpapi",
-      version="0.0.1",
+      version="0.0.2",
       author="Michael Tartre",
       author_email="mt@quantology.org",
       url="https://github.com/quantology/wpapi",

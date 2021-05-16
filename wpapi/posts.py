@@ -14,15 +14,17 @@ class WordPressPost:
         if "categories" in data:
             assert wp_api is not None
             categories = set(cat.strip() for cat in data["categories"].split(","))
-            cat_ids = set()
-            for (cat_id, (name, slug, desc)) in wp_api.categories.items():
-                if name in categories:
-                    cat_ids.add(cat_id)
-                    categories.remove(name)
-            for new_category in categories:
-                new_cat = wp_api.post("wp/v2/categories", json={"name": new_category})
-                cat_ids.add(new_cat["id"])
+            cat_ids = wp_api.category_ids(categories, create_if_missing=True)
             data["categories"] = ",".join([str(cat_id) for cat_id in cat_ids])
+        if "tags" in data:
+            assert wp_api is not None
+            tags = set(cat.strip() for cat in data["tags"].split(","))
+            tag_ids = wp_api.tag_ids(tags, create_if_missing=True)
+            data["tags"] = ",".join([str(tag_id) for tag_id in tag_ids])
+            for new_tag in tags:
+                new_t = wp_api.post("wp/v2/tags", json={"name": new_tag})
+                tag_ids.add(new_t["id"])
+            data["tags"] = ",".join([str(tag_id) for tag_id in tag_ids])
         for preprocessor in data.pop("preprocess", "").split(","):
             if not preprocessor:
                 continue
@@ -61,11 +63,12 @@ class WordPressPost:
             existing_post = self.wp_api.posts.get(self.data["slug"])
             if existing_post is not None:
                 existing_id = existing_post.data["id"]
-            else:
+            elif self.wp_api.debug:
                 print("none existing:", self.data["slug"])
         post_to_url = "wp/v2/posts/"
         if existing_id is not None:
-            print("updating existing:", existing_id)
+            if self.wp_api.debug:
+                print("updating existing:", existing_id)
             post_to_url += str(existing_id)
         result = self.wp_api.post(post_to_url, json=self.data)
         assert result["slug"] == self.data["slug"]
